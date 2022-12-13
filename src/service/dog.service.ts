@@ -1,8 +1,8 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Dog, DogDocument } from '../schemas/dog.schema';
-import { DogDTO } from 'src/dto/dog.dto';
+import { Dog, DogDocument } from '../dog/schemas/dog.schema';
+import { DogDTO } from 'src/dog/dto/dog.dto';
 
 @Injectable()
 export class DogsService {

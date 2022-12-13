@@ -1,7 +1,7 @@
 import { Controller, Get, Query, Post, Body, Put, Param, Delete, Req, Header, Res, HttpException, HttpStatus } from '@nestjs/common';
-import { DogSchema } from 'src/schemas/dog.schema';
+import { DogSchema } from 'src/dog/schemas/dog.schema';
 import { DogsService } from 'src/service/dog.service';
-import { DogDTO } from 'src/dto/dog.dto';
+import { DogDTO } from '../dto/dog.dto';
 import { Request, Response } from 'express';
 import { Roles } from 'src/roles.decorator';
 
@@ -9,7 +9,7 @@ import { Roles } from 'src/roles.decorator';
 export class DogController {
   constructor(private dogService: DogsService) { }
   @Post()
-  @Roles(Admin)
+  // @Roles(Admin)
   async create(@Body() createDogDto: DogDTO, @Res() res: Response) {
     const test1 = await this.dogService.createNew(createDogDto)
     console.log({ test1 })
