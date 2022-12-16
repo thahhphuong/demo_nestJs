@@ -1,15 +1,20 @@
-import { Controller, Get, Query, Post, Body, Put, Param, Delete, Req, Header, Res, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Put, Param, Delete, Req, Header, Res, HttpStatus, UseGuards } from '@nestjs/common';
 import { DogSchema } from 'src/dog/schemas/dog.schema';
-import { DogsService } from 'src/service/dog.service';
+import { DogsService } from 'src/dog/service/dog.service';
 import { DogDTO } from '../dto/dog.dto';
 import { Request, Response } from 'express';
-import { Roles } from 'src/roles.decorator';
+import { RolesGuard } from 'src/auth.guard';
+import { Roles } from 'src/role/roles.decorator';
+import { Role } from 'src/role/role.enum';
+
+
 
 @Controller('tests')
+// @UseGuards(RolesGuard)
 export class DogController {
   constructor(private dogService: DogsService) { }
   @Post()
-  // @Roles(Admin)
+  // @Roles('admin')
   async create(@Body() createDogDto: DogDTO, @Res() res: Response) {
     const test1 = await this.dogService.createNew(createDogDto)
     console.log({ test1 })
@@ -19,9 +24,11 @@ export class DogController {
 
   @Get()
   @Header('Content-Type', 'application/json.')
-  findAll(@Query() { search, limit }) {
+  @Roles(Role.Admin)
+  async getALl(@Query() { search, limit }, @Res() res: Response) {
     console.log({ search, limit })
-    return 'This action returns all cats ++ findAll';
+    const responseData = await this.dogService.findAll()
+    return res.status(HttpStatus.OK).json(responseData)
   }
 
   // getInfo(@Req() req): string {
@@ -30,8 +37,10 @@ export class DogController {
   // }
   /* update */
   @Put(':id')
-  updateInfo(@Param('id') id: string) {
-    return `update info success`
+  async updateInfo(@Param('id') id: string, @Body() body: DogDTO, @Res() res: Response) {
+    console.log(body)
+    const updateInfo = await this.dogService.updateInfo(id, body)
+    return res.status(HttpStatus.OK).json(updateInfo)
   }
 
   /* DELETE */
