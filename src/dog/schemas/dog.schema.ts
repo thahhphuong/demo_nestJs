@@ -14,9 +14,10 @@ export class Dog {
     @Prop()
     tags: string[];
 
-    @Prop({type: Date, default: new Date()})
+    @Prop({ type: Date, default: new Date() })
     createdAt: Date
 
 }
-
-export const DogSchema = SchemaFactory.createForClass(Dog);
+const DogSchema = SchemaFactory.createForClass(Dog);
+DogSchema.index({ name: 'text', tags: 'text' })
+export { DogSchema }

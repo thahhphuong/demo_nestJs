@@ -13,12 +13,16 @@ export class DogsService {
         return createdDog.save();
     }
 
-    async findAll(): Promise<Dog[]> {
-        return this.dogModel.find().exec();
+    async findAll(conditions: Object, skip: number): Promise<Dog[]> {
+        return this.dogModel.find(conditions).skip(skip).sort({ createdAt: -1 })
     }
 
     async updateInfo(id: string, body: Object): Promise<Dog> {
         const data = await this.dogModel.findOneAndUpdate({ _id: id }, { $set: { body } }, { new: true, upsert: true })
         return data
+    }
+
+    async getInfo(id: string): Promise<Dog[]> {
+        return await this.dogModel.findOne({ _id: id })
     }
 }

@@ -24,17 +24,22 @@ export class DogController {
 
   @Get()
   @Header('Content-Type', 'application/json.')
-  @Roles(Role.Admin)
-  async getALl(@Query() { search, limit }, @Res() res: Response) {
-    console.log({ search, limit })
-    const responseData = await this.dogService.findAll()
+  // @Roles(Role.User)
+  async getALl(@Query() { skip, limit }, @Query('searchQuery') searchQuery: string, @Res() res: Response) {
+    let conditions = {}
+    if (searchQuery) {
+      conditions['$text'] = { $search: searchQuery }
+    }
+    const responseData = await this.dogService.findAll(conditions, skip)
     return res.status(HttpStatus.OK).json(responseData)
   }
 
-  // getInfo(@Req() req): string {
-  //   console.log(req.body)
-  //   return 'This action single cat with body';
-  // }
+  @Get(':id')
+  async getInfo(@Param('id') id: string, @Res() res: Response) {
+    const responseData = await this.dogService.getInfo(id)
+    return res.status(HttpStatus.OK).json(responseData)
+  }
+
   /* update */
   @Put(':id')
   async updateInfo(@Param('id') id: string, @Body() body: DogDTO, @Res() res: Response) {
