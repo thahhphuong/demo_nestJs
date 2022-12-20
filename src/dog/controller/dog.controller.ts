@@ -25,10 +25,11 @@ export class DogController {
   @Get()
   @Header('Content-Type', 'application/json.')
   // @Roles(Role.User)
-  async getALl(@Query() { skip, limit }, @Query('searchQuery') searchQuery: string, @Res() res: Response) {
+  async getALl(@Query() { skip, limit }, @Query() search: string, @Res() res: Response) {
     let conditions = {}
-    if (searchQuery) {
-      conditions['$text'] = { $search: searchQuery }
+
+    if (Object.values(search).length > 0) {
+      conditions['$text'] = { $search: search }
     }
     const responseData = await this.dogService.findAll(conditions, skip)
     return res.status(HttpStatus.OK).json(responseData)
@@ -43,7 +44,7 @@ export class DogController {
   /* update */
   @Put(':id')
   async updateInfo(@Param('id') id: string, @Body() body: DogDTO, @Res() res: Response) {
-    console.log(body)
+    
     const updateInfo = await this.dogService.updateInfo(id, body)
     return res.status(HttpStatus.OK).json(updateInfo)
   }

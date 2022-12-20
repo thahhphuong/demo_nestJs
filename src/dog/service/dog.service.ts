@@ -18,7 +18,8 @@ export class DogsService {
     }
 
     async updateInfo(id: string, body: Object): Promise<Dog> {
-        const data = await this.dogModel.findOneAndUpdate({ _id: id }, { $set: { body } }, { new: true, upsert: true })
+        console.log(body)
+        const data = this.dogModel.findOneAndUpdate({ _id: id }, { $set: { body } }, { upsert: true, new: true })
         return data
     }
 
